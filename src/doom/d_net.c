@@ -121,6 +121,9 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     timelimit = settings->timelimit;
     consoleplayer = settings->consoleplayer;
 
+    // [Crispy Multiplayer Doom] Support -noplayercollisions.
+    no_player_collisions = settings->no_player_collisions;
+
     if (lowres_turn)
     {
         printf("NOTE: Turning resolution is reduced; this is probably "
@@ -155,6 +158,9 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->lowres_turn = (M_ParmExists("-record")
                          && !M_ParmExists("-longtics"))
                           || M_ParmExists("-shorttics");
+
+    // [Crispy Multiplayer Doom] Support -noplayercollisions.
+    settings->no_player_collisions = no_player_collisions;
 }
 
 static void InitConnectData(net_connect_data_t *connect_data)

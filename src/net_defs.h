@@ -207,6 +207,9 @@ typedef struct
     int num_players;
     int consoleplayer;
 
+    // [Crispy Multiplayer Doom] Support -noplayercollisions.
+    int no_player_collisions;
+
     // Hexen player classes:
 
     int player_classes[NET_MAXPLAYERS];

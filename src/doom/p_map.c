@@ -285,7 +285,11 @@ boolean PIT_CheckThing (mobj_t* thing)
     boolean		solid;
     boolean		unblocking = false;
     int			damage;
-		
+
+    // [Crispy Multiplayer Doom] If -noplayercollisions, allow players to pass through each other
+    if (no_player_collisions && thing->type == MT_PLAYER && tmthing->type == MT_PLAYER)
+	return true;
+
     if (!(thing->flags & (MF_SOLID|MF_SPECIAL|MF_SHOOTABLE) ))
 	return true;
     

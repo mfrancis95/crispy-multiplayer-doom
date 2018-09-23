@@ -102,6 +102,9 @@ boolean         nomonsters;	// checkparm of -nomonsters
 boolean         respawnparm;	// checkparm of -respawn
 boolean         fastparm;	// checkparm of -fast
 
+// [Crispy Multiplayer Doom] Support -noplayercollisions.
+boolean no_player_collisions;
+
 //extern int soundVolume;
 //extern  int	sfxVolume;
 //extern  int	musicVolume;
@@ -1501,6 +1504,9 @@ void D_DoomMain (void)
     //
 
     devparm = M_CheckParm ("-devparm");
+
+    // [Crispy Multiplayer Doom] Support -noplayercollisions.
+    no_player_collisions = M_CheckParm("-noplayercollisions");
 
     I_DisplayFPSDots(devparm);
 
