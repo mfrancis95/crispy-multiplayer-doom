@@ -50,6 +50,8 @@ extern  boolean	fastparm;	// checkparm of -fast
 
 extern  boolean	devparm;	// DEBUG: launched with -devparm
 
+// [Crispy Multiplayer Doom] Support -dropweapons.
+extern boolean drop_weapons;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 extern boolean no_player_collisions;
 

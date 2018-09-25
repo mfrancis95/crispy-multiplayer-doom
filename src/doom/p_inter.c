@@ -597,7 +597,8 @@ P_TouchSpecialThing
 	
 	// weapons
       case SPR_BFUG:
-	if (!P_GiveWeapon (player, wp_bfg, false) )
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+	if (!P_GiveWeapon (player, wp_bfg, (special->flags & MF_DROPPED) != 0) )
 	    return;
 	player->message = DEH_String(GOTBFG9000);
 	sound = sfx_wpnup;	
@@ -612,21 +613,24 @@ P_TouchSpecialThing
 	break;
 	
       case SPR_CSAW:
-	if (!P_GiveWeapon (player, wp_chainsaw, false) )
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+	if (!P_GiveWeapon (player, wp_chainsaw, (special->flags & MF_DROPPED) != 0) )
 	    return;
 	player->message = DEH_String(GOTCHAINSAW);
 	sound = sfx_wpnup;	
 	break;
 	
       case SPR_LAUN:
-	if (!P_GiveWeapon (player, wp_missile, false) )
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+	if (!P_GiveWeapon (player, wp_missile, (special->flags & MF_DROPPED) != 0) )
 	    return;
 	player->message = DEH_String(GOTLAUNCHER);
 	sound = sfx_wpnup;	
 	break;
 	
       case SPR_PLAS:
-	if (!P_GiveWeapon (player, wp_plasma, false) )
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+	if (!P_GiveWeapon (player, wp_plasma, (special->flags & MF_DROPPED) != 0) )
 	    return;
 	player->message = DEH_String(GOTPLASMA);
 	sound = sfx_wpnup;	
@@ -660,6 +664,12 @@ P_TouchSpecialThing
 	S_StartSound (NULL, sound);
 }
 
+// [Crispy Multiplayer Doom] Support -dropweapons.
+static const mobjtype_t drop_table[8] = {
+	MT_CLIP, MT_SHOTGUN, MT_CHAINGUN,
+	MT_MISC27, MT_MISC28, MT_MISC25,
+	MT_MISC26, MT_SUPERSHOTGUN
+};
 
 //
 // KillMobj
@@ -772,6 +782,16 @@ P_KillMobj
       case MT_CHAINGUY:
 	item = MT_CHAINGUN;
 	break;
+
+      // [Crispy Multiplayer Doom] If -dropweapons, drop the player's current weapon on death.
+      case MT_PLAYER:
+	if (drop_weapons) {
+		if (target->player->readyweapon >= wp_pistol && target->player->readyweapon <= wp_supershotgun) {
+			item = drop_table[target->player->readyweapon - wp_pistol];
+			break;
+		}
+		return;
+	}
 	
       default:
 	return;

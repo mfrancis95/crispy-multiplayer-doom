@@ -121,6 +121,9 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     timelimit = settings->timelimit;
     consoleplayer = settings->consoleplayer;
 
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+    drop_weapons = settings->drop_weapons;
+
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = settings->no_player_collisions;
 
@@ -159,6 +162,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
                          && !M_ParmExists("-longtics"))
                           || M_ParmExists("-shorttics");
 
+    // [Crispy Multiplayer Doom] Support -dropweapons.
+    settings->drop_weapons = drop_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     settings->no_player_collisions = no_player_collisions;
 }
