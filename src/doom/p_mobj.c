@@ -34,6 +34,7 @@
 
 #include "doomstat.h"
 
+#define IS_WEAPON(type) ((type >= 2001 && type <= 2006) || type == 82)
 
 void G_PlayerReborn (int player);
 void P_SpawnMapThing (mapthing_t*	mthing);
@@ -936,7 +937,11 @@ void P_SpawnMapThing (mapthing_t* mthing)
     // check for apropriate skill level
     if (!netgame && (mthing->options & 16) )
 	return;
-		
+
+    // [Crispy Multiplayer Doom] Don't spawn multiplayer-only weapons if -nomultiplayerweapons.
+    if (IS_WEAPON(mthing->type) && netgame && no_multiplayer_weapons && (mthing->options & 16))
+	return;
+
     if (gameskill == sk_baby)
 	bit = 1;
     else if (gameskill == sk_nightmare)

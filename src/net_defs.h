@@ -210,6 +210,9 @@ typedef struct
     // [Crispy Multiplayer Doom] Support -dropweapons.
     int drop_weapons;
 
+    // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
+    int no_multiplayer_weapons;
+
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     int no_player_collisions;
 
