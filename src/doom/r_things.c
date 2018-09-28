@@ -743,7 +743,8 @@ void R_ProjectSprite (mobj_t* thing)
 	// fixed map
 	vis->colormap[0] = vis->colormap[1] = fixedcolormap;
     }
-    else if (thing->frame & FF_FULLBRIGHT)
+    // [Crispy Multiplayer Doom] If -fullbrightplayers, players are always rendered at full brightness, except when dead.
+    else if ((fullbright_players && thing->health > 0 && thing->type == MT_PLAYER) || (thing->frame & FF_FULLBRIGHT))
     {
 	// full bright
 	vis->colormap[0] = vis->colormap[1] = colormaps;
