@@ -286,6 +286,9 @@ boolean PIT_CheckThing (mobj_t* thing)
     boolean		unblocking = false;
     int			damage;
 
+    // [Crispy Multiplayer Doom] If -nofriendlyfire, player projectiles pass through other players.
+    if (no_friendly_fire && thing->type == MT_PLAYER && (tmthing->flags & MF_MISSILE) && tmthing->target->type == MT_PLAYER)
+	return true;
     // [Crispy Multiplayer Doom] If -noplayercollisions, allow players to pass through each other.
     if (no_player_collisions && thing->type == MT_PLAYER && tmthing->type == MT_PLAYER)
 	return true;
@@ -972,6 +975,10 @@ PTR_AimTraverse (intercept_t* in)
     if (!(th->flags&MF_SHOOTABLE))
 	return true;			// corpse or something
 
+    // [Crispy Multiplayer Doom] If -nofriendlyfire, don't use other players as aiming targets.
+    if (no_friendly_fire && shootthing->type == MT_PLAYER && th->type == MT_PLAYER)
+	return true;
+
     // check angles to see if the thing can be aimed at
     dist = FixedMul (attackrange, in->frac);
     thingtopslope = FixedDiv (th->z+th->height - shootz , dist);
@@ -1140,7 +1147,11 @@ boolean PTR_ShootTraverse (intercept_t* in)
     
     if (!(th->flags&MF_SHOOTABLE))
 	return true;		// corpse or something
-		
+
+    //[Crispy Multiplayer Doom] If -nofriendlyfire, player hitscan attacks pass through other players.
+    if (no_friendly_fire && shootthing->type == MT_PLAYER && th->type == MT_PLAYER)
+	return true;
+
     // check angles to see if the thing can be aimed at
     dist = FixedMul (attackrange, in->frac);
     thingtopslope = FixedDiv (th->z+th->height - shootz , dist);
@@ -1418,7 +1429,11 @@ boolean PIT_RadiusAttack (mobj_t* thing)
     // take no damage from concussion.
     if (thing->type == MT_CYBORG
 	|| thing->type == MT_SPIDER)
-	return true;	
+	return true;
+
+    // [Crispy Multiplayer Doom] If -nofriendlyfire, player radius attacks don't affect other players.
+    if (bombsource != NULL && bombsource != thing && bombsource->type == MT_PLAYER && no_friendly_fire && thing->type == MT_PLAYER)
+	return true;
 		
     dx = abs(thing->x - bombspot->x);
     dy = abs(thing->y - bombspot->y);

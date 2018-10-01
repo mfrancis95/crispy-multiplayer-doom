@@ -125,6 +125,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     drop_weapons = settings->drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     fullbright_players = settings->fullbright_players;
+    // [Crispy Multiplayer Doom] Support -nofriendlyfire.
+    no_friendly_fire = settings->no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     no_multiplayer_weapons = settings->no_multiplayer_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
@@ -169,6 +171,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->drop_weapons = drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     settings->fullbright_players = fullbright_players;
+    // [Crispy Multiplayer Doom] Support -nofriendlyfire.
+    settings->no_friendly_fire = no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     settings->no_multiplayer_weapons = no_multiplayer_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
