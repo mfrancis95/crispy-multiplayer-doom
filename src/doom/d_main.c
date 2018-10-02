@@ -112,6 +112,8 @@ boolean no_friendly_fire;
 boolean no_multiplayer_weapons;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -sharekeys.
+boolean share_keys;
 
 //extern int soundVolume;
 //extern  int	sfxVolume;
@@ -1523,6 +1525,8 @@ void D_DoomMain (void)
     no_multiplayer_weapons = M_CheckParm("-nomultiplayerweapons");
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = M_CheckParm("-noplayercollisions");
+    // [Crispy Multiplayer Doom] Support -sharekeys.
+    share_keys = M_CheckParm("-sharekeys");
 
     I_DisplayFPSDots(devparm);
 

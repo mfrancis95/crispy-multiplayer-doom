@@ -274,6 +274,20 @@ P_GiveCard
     player->cards[card] = 1;
 }
 
+static void P_GiveCards(player_t* player, card_t card) {
+    // [Crispy Multiplayer Doom] If -sharekeys, give the same key to every player.
+    if (share_keys) {
+        for (int i = 0; i < MAXPLAYERS; i++) {
+            if (playeringame[i]) {
+                P_GiveCard(&players[i], card);
+            }
+        }
+    }
+    // [Crispy Multiplayer Doom] Otherwise, give only the triggering player the key, like usual.
+    else {
+        P_GiveCard(player, card);
+    }
+}
 
 //
 // P_GivePower
@@ -417,7 +431,7 @@ P_TouchSpecialThing
       case SPR_BKEY:
 	if (!player->cards[it_bluecard])
 	    player->message = DEH_String(GOTBLUECARD);
-	P_GiveCard (player, it_bluecard);
+	P_GiveCards (player, it_bluecard);
 	if (!netgame)
 	    break;
 	return;
@@ -425,7 +439,7 @@ P_TouchSpecialThing
       case SPR_YKEY:
 	if (!player->cards[it_yellowcard])
 	    player->message = DEH_String(GOTYELWCARD);
-	P_GiveCard (player, it_yellowcard);
+	P_GiveCards (player, it_yellowcard);
 	if (!netgame)
 	    break;
 	return;
@@ -433,7 +447,7 @@ P_TouchSpecialThing
       case SPR_RKEY:
 	if (!player->cards[it_redcard])
 	    player->message = DEH_String(GOTREDCARD);
-	P_GiveCard (player, it_redcard);
+	P_GiveCards (player, it_redcard);
 	if (!netgame)
 	    break;
 	return;
@@ -441,7 +455,7 @@ P_TouchSpecialThing
       case SPR_BSKU:
 	if (!player->cards[it_blueskull])
 	    player->message = DEH_String(GOTBLUESKUL);
-	P_GiveCard (player, it_blueskull);
+	P_GiveCards (player, it_blueskull);
 	if (!netgame)
 	    break;
 	return;
@@ -449,7 +463,7 @@ P_TouchSpecialThing
       case SPR_YSKU:
 	if (!player->cards[it_yellowskull])
 	    player->message = DEH_String(GOTYELWSKUL);
-	P_GiveCard (player, it_yellowskull);
+	P_GiveCards (player, it_yellowskull);
 	if (!netgame)
 	    break;
 	return;
@@ -457,7 +471,7 @@ P_TouchSpecialThing
       case SPR_RSKU:
 	if (!player->cards[it_redskull])
 	    player->message = DEH_String(GOTREDSKULL);
-	P_GiveCard (player, it_redskull);
+	P_GiveCards (player, it_redskull);
 	if (!netgame)
 	    break;
 	return;

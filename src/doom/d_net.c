@@ -131,6 +131,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     no_multiplayer_weapons = settings->no_multiplayer_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = settings->no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -sharekeys.
+    share_keys = settings->share_keys;
 
     if (lowres_turn)
     {
@@ -177,6 +179,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->no_multiplayer_weapons = no_multiplayer_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     settings->no_player_collisions = no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -sharekeys.
+    settings->share_keys = share_keys;
 }
 
 static void InitConnectData(net_connect_data_t *connect_data)

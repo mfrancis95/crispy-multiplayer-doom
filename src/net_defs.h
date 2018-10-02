@@ -217,6 +217,8 @@ typedef struct
     int no_multiplayer_weapons;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     int no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -sharekeys.
+    int share_keys;
 
     // Hexen player classes:
 

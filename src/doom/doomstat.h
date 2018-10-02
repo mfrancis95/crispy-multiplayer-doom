@@ -60,6 +60,8 @@ extern boolean no_friendly_fire;
 extern boolean no_multiplayer_weapons;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 extern boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -sharekeys.
+extern boolean share_keys;
 
 // -----------------------------------------------------
 // Game Mode - identify IWAD as shareware, retail etc.
