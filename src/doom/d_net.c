@@ -129,6 +129,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     no_friendly_fire = settings->no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     no_multiplayer_weapons = settings->no_multiplayer_weapons;
+    // [Crispy Multiplayer Doom] Support -nopickupswitch.
+    no_pickup_switch = settings->no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = settings->no_player_collisions;
     // [Crispy Multiplayer Doom] Support -sharekeys.
@@ -177,6 +179,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->no_friendly_fire = no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     settings->no_multiplayer_weapons = no_multiplayer_weapons;
+    // [Crispy Multiplayer Doom] Support -nopickupswitch.
+    settings->no_pickup_switch = no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     settings->no_player_collisions = no_player_collisions;
     // [Crispy Multiplayer Doom] Support -sharekeys.

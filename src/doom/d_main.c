@@ -110,6 +110,8 @@ boolean fullbright_players;
 boolean no_friendly_fire;
 // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
 boolean no_multiplayer_weapons;
+// [Crispy Multiplayer Doom] Support -nopickupswitch.
+boolean no_pickup_switch;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 boolean no_player_collisions;
 // [Crispy Multiplayer Doom] Support -sharekeys.
@@ -1523,6 +1525,8 @@ void D_DoomMain (void)
     no_friendly_fire = M_CheckParm("-nofriendlyfire");
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     no_multiplayer_weapons = M_CheckParm("-nomultiplayerweapons");
+    // [Crispy Multiplayer Doom] Support -nopickupswitch.
+    no_pickup_switch = M_CheckParm("-nopickupswitch");
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = M_CheckParm("-noplayercollisions");
     // [Crispy Multiplayer Doom] Support -sharekeys.

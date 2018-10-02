@@ -180,6 +180,9 @@ P_GiveWeapon
 	    P_GiveAmmo (player, weaponinfo[weapon].ammo, 5);
 	else
 	    P_GiveAmmo (player, weaponinfo[weapon].ammo, 2);
+
+	// [Crispy Multiplayer Doom] If -nopickupswitch, don't switch to new weapons.
+	if (!no_pickup_switch)
 	player->pendingweapon = weapon;
 
 	if (player == &players[consoleplayer])
@@ -205,6 +208,8 @@ P_GiveWeapon
     {
 	gaveweapon = true;
 	player->weaponowned[weapon] = true;
+	// [Crispy Multiplayer Doom] If -nopickupswitch, don't switch to new weapons.
+	if (!no_pickup_switch)
 	player->pendingweapon = weapon;
     }
 	

@@ -90,6 +90,8 @@ void NET_WriteSettings(net_packet_t *packet, net_gamesettings_t *settings)
     NET_WriteInt8(packet, settings->no_friendly_fire);
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons
     NET_WriteInt8(packet, settings->no_multiplayer_weapons);
+    // [Crispy Multiplayer Doom] Support -nopickupswitch.
+    NET_WriteInt8(packet, settings->no_pickup_switch);
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     NET_WriteInt8(packet, settings->no_player_collisions);
     // [Crispy Multiplayer Doom] Support -sharekeys.
@@ -131,6 +133,8 @@ boolean NET_ReadSettings(net_packet_t *packet, net_gamesettings_t *settings)
            && NET_ReadInt8(packet, (unsigned int *) &settings->no_friendly_fire)
            // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
            && NET_ReadInt8(packet, (unsigned int *) &settings->no_multiplayer_weapons)
+           // [Crispy Multiplayer Doom] Support -nopickupswitch.
+           && NET_ReadInt8(packet, (unsigned int *) &settings->no_pickup_switch)
            // [Crispy Multiplayer Doom] Support -noplayercollisions.
            && NET_ReadInt8(packet, (unsigned int *) &settings->no_player_collisions)
            // [Crispy Multiplayer Doom] Support -sharekeys.

@@ -215,6 +215,8 @@ typedef struct
     int no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
     int no_multiplayer_weapons;
+    // [Crispy Multiplayer Doom] Support -nopickupswitch.
+    int no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     int no_player_collisions;
     // [Crispy Multiplayer Doom] Support -sharekeys.
