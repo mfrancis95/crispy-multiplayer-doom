@@ -106,6 +106,8 @@ boolean         fastparm;	// checkparm of -fast
 boolean drop_weapons;
 // [Crispy Multiplayer Doom] Support -fullbrightplayers.
 boolean fullbright_players;
+// [Crispy Multiplayer Doom] Support -keepkeys.
+boolean keep_keys;
 // [Crispy Multiplayer Doom] Support -nofriendlyfire.
 boolean no_friendly_fire;
 // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
@@ -1521,6 +1523,8 @@ void D_DoomMain (void)
     drop_weapons = M_CheckParm("-dropweapons");
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     fullbright_players = M_CheckParm("-fullbrightplayers");
+    // [Crispy Multiplayer Doom] Support -keepkeys.
+    keep_keys = M_CheckParm("-keepkeys");
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     no_friendly_fire = M_CheckParm("-nofriendlyfire");
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.

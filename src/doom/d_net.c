@@ -120,11 +120,12 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     respawnparm = settings->respawn_monsters;
     timelimit = settings->timelimit;
     consoleplayer = settings->consoleplayer;
-
     // [Crispy Multiplayer Doom] Support -dropweapons.
     drop_weapons = settings->drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     fullbright_players = settings->fullbright_players;
+    // [Crispy Multiplayer Doom] Support -keepkeys.
+    keep_keys = settings->keep_keys;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     no_friendly_fire = settings->no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
@@ -175,6 +176,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->drop_weapons = drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     settings->fullbright_players = fullbright_players;
+    // [Crispy Multiplayer Doom] Support -keepkeys.
+    settings->keep_keys = keep_keys;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     settings->no_friendly_fire = no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
