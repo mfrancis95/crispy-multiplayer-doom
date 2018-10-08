@@ -134,6 +134,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     no_pickup_switch = settings->no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = settings->no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -sharecomputermaps.
+    share_computer_maps = settings->share_computer_maps;
     // [Crispy Multiplayer Doom] Support -sharekeys.
     share_keys = settings->share_keys;
 
@@ -186,6 +188,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->no_pickup_switch = no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     settings->no_player_collisions = no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -sharecomputermaps.
+    settings->share_computer_maps = share_computer_maps;
     // [Crispy Multiplayer Doom] Support -sharekeys.
     settings->share_keys = share_keys;
 }

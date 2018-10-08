@@ -341,7 +341,14 @@ P_GivePower
     return true;
 }
 
-
+static void P_GiveComputerMaps(void) {
+    for (int i = 0; i < MAXPLAYERS; i++) {
+        if (playeringame[i] && P_GivePower(&players[i], pw_allmap)) {
+            players[i].bonuscount += BONUSADD;
+            players[i].message = DEH_String(GOTMAP);
+        }
+    }
+}
 
 //
 // P_TouchSpecialThing
@@ -536,6 +543,8 @@ P_TouchSpecialThing
 	    return;
 	player->message = DEH_String(GOTMAP);
 	sound = sfx_getpow;
+	if (share_computer_maps)
+	    P_GiveComputerMaps();
 	break;
 	
       case SPR_PVIS:

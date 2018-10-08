@@ -116,6 +116,8 @@ boolean no_multiplayer_weapons;
 boolean no_pickup_switch;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -sharecomputermaps.
+boolean share_computer_maps;
 // [Crispy Multiplayer Doom] Support -sharekeys.
 boolean share_keys;
 
@@ -1533,6 +1535,8 @@ void D_DoomMain (void)
     no_pickup_switch = M_CheckParm("-nopickupswitch");
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = M_CheckParm("-noplayercollisions");
+    // [Crispy Multiplayer Doom] Support -sharecomputermaps.
+    share_computer_maps = M_CheckParm("-sharecomputermaps");
     // [Crispy Multiplayer Doom] Support -sharekeys.
     share_keys = M_CheckParm("-sharekeys");
 
