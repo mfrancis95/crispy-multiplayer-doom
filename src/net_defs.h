@@ -211,6 +211,8 @@ typedef struct
     int drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     int fullbright_players;
+    // [Crispy Multiplayer Doom] Support -keepcomputermaps.
+    int keep_computer_maps;
     // [Crispy Multiplayer Doom] Support -keepkeys.
     int keep_keys;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.

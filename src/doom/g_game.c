@@ -1278,10 +1278,17 @@ void G_PlayerReborn (int player)
     int		secretcount;
     // [Crispy Multiplayer Doom] Support -keepkeys.
     boolean cards[NUMCARDS];
+    // [Crispy Multiplayer Doom] Support -keepcomputermaps.
+    boolean keep_computer_map = false;
+
+    // [Crispy Multiplayer Doom] If -keepcomputermaps, computer area maps are kept on death.
+    if (keep_computer_maps)
+	keep_computer_map = players[player].powers[pw_allmap];
 
     // [Crispy Multiplayer Doom] If -keepkeys, keys are kept on death.
     if (keep_keys)
 	memcpy (cards,players[player].cards,sizeof(cards));
+
     memcpy (frags,players[player].frags,sizeof(frags));
     killcount = players[player].killcount; 
     itemcount = players[player].itemcount; 
@@ -1290,9 +1297,14 @@ void G_PlayerReborn (int player)
     p = &players[player]; 
     memset (p, 0, sizeof(*p)); 
 
+    // [Crispy Multiplayer Doom] If -keepcomputermaps, computer area maps are kept on death.
+    if (keep_computer_map)
+	players[player].powers[pw_allmap] = 1;
+
     // [Crispy Multiplayer Doom] If -keepkeys, keys are kept on death.
     if (keep_keys)
 	memcpy (players[player].cards, cards, sizeof(players[player].cards));
+
     memcpy (players[player].frags, frags, sizeof(players[player].frags)); 
     players[player].killcount = killcount; 
     players[player].itemcount = itemcount; 

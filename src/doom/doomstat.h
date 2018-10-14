@@ -54,6 +54,8 @@ extern  boolean	devparm;	// DEBUG: launched with -devparm
 extern boolean drop_weapons;
 // [Crispy Multiplayer Doom] Support -fullbrightplayers.
 extern boolean fullbright_players;
+// [Crispy Multiplayer Doom] Support -keepcomputermaps.
+extern boolean keep_computer_maps;
 // [Crispy Multiplayer Doom] Support -keepkeys.
 extern boolean keep_keys;
 // [Crispy Multiplayer Doom] Support -nofriendlyfire.

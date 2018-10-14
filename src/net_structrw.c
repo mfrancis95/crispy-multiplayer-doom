@@ -85,6 +85,8 @@ void NET_WriteSettings(net_packet_t *packet, net_gamesettings_t *settings)
     NET_WriteInt8(packet, settings->drop_weapons);
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
     NET_WriteInt8(packet, settings->fullbright_players);
+    // [Crispy Multiplayer Doom] Support -keepcomputermaps.
+    NET_WriteInt8(packet, settings->keep_computer_maps);
     // [Crispy Multiplayer Doom] Support -keepkeys.
     NET_WriteInt8(packet, settings->keep_keys);
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
@@ -132,6 +134,8 @@ boolean NET_ReadSettings(net_packet_t *packet, net_gamesettings_t *settings)
            && NET_ReadInt8(packet, (unsigned int *) &settings->drop_weapons)
            // [Crispy Multiplayer Doom] Support -fullbrightplayers.
            && NET_ReadInt8(packet, (unsigned int *) &settings->fullbright_players)
+           // [Crispy Multiplayer Doom] Support -keepcomputermaps.
+           && NET_ReadInt8(packet, (unsigned int *) &settings->keep_computer_maps)
            // [Crispy Multiplayer Doom] Support -keepkeys.
            && NET_ReadInt8(packet, (unsigned int *) &settings->keep_keys)
            // [Crispy Multiplayer Doom] Support -nofriendlyfire.
