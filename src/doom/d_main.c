@@ -118,6 +118,8 @@ boolean no_multiplayer_weapons;
 boolean no_pickup_switch;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -respawnitems.
+boolean respawn_items;
 // [Crispy Multiplayer Doom] Support -sharecomputermaps.
 boolean share_computer_maps;
 // [Crispy Multiplayer Doom] Support -sharekeys.
@@ -1539,6 +1541,8 @@ void D_DoomMain (void)
     no_pickup_switch = M_CheckParm("-nopickupswitch");
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = M_CheckParm("-noplayercollisions");
+    // [Crispy Multiplayer Doom] Support -respawnitems.
+    respawn_items = M_CheckParm("-respawnitems");
     // [Crispy Multiplayer Doom] Support -sharecomputermaps.
     share_computer_maps = M_CheckParm("-sharecomputermaps");
     // [Crispy Multiplayer Doom] Support -sharekeys.
@@ -1577,6 +1581,10 @@ void D_DoomMain (void)
 
     if (M_CheckParm ("-dm3"))
 	deathmatch = 3;
+
+    // [Crispy Multiplayer Doom] Items respawn for deathmatch >= 2.0 modes.
+    if (deathmatch > 1)
+	respawn_items = true;
 
     if (devparm)
 	DEH_printf(D_DEVSTR);

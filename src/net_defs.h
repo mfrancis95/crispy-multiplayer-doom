@@ -223,6 +223,8 @@ typedef struct
     int no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     int no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -respawnitems.
+    int respawn_items;
     // [Crispy Multiplayer Doom] Support -sharecomputermaps.
     int share_computer_maps;
     // [Crispy Multiplayer Doom] Support -sharekeys.

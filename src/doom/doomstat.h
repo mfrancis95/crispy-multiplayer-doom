@@ -66,6 +66,8 @@ extern boolean no_multiplayer_weapons;
 extern boolean no_pickup_switch;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 extern boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -respawnitems.
+extern boolean respawn_items;
 // [Crispy Multiplayer Doom] Support -sharecomputermaps.
 extern boolean share_computer_maps;
 // [Crispy Multiplayer Doom] Support -sharekeys.

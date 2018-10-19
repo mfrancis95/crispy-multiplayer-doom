@@ -758,9 +758,8 @@ void P_RespawnSpecials (void)
     
     int			i;
 
-    // only respawn items in deathmatch
-    // AX: deathmatch 3 is a Crispy-specific change
-    if (deathmatch != 2 && deathmatch != 3)
+    // [Crispy Multiplayer Doom] Only respawn items when playing a deathmatch mode >= 2.0 or -respawnitems.
+    if (!respawn_items)
 	return;	// 
 
     // nothing left to respawn?
