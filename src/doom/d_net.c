@@ -120,6 +120,9 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     respawnparm = settings->respawn_monsters;
     timelimit = settings->timelimit;
     consoleplayer = settings->consoleplayer;
+
+    // [Crispy Multiplayer Doom] Support -alertmonsters.
+    alert_monsters = settings->alert_monsters;
     // [Crispy Multiplayer Doom] Support -dropweapons.
     drop_weapons = settings->drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
@@ -178,6 +181,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
                          && !M_ParmExists("-longtics"))
                           || M_ParmExists("-shorttics");
 
+    // [Crispy Multiplayer Doom] Support -alertmonsters.
+    settings->alert_monsters = alert_monsters;
     // [Crispy Multiplayer Doom] Support -dropweapons.
     settings->drop_weapons = drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.

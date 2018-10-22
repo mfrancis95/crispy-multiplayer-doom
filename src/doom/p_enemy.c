@@ -673,6 +673,11 @@ void A_Look (mobj_t* actor)
     }
 
     P_SetMobjState (actor, actor->info->seestate);
+
+    // [Crispy Multiplayer Doom] If -alertmonsters, when one monster is alerted, alert other monsters in the vicinity.
+    // https://www.youtube.com/watch?v=7V8mmoKWJNE
+    if (alert_monsters)
+        P_NoiseAlert(actor->target, actor);
 }
 
 

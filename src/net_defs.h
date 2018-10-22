@@ -207,6 +207,8 @@ typedef struct
     int num_players;
     int consoleplayer;
 
+    // [Crispy Multiplayer Doom] Support -alertmonsters.
+    int alert_monsters;
     // [Crispy Multiplayer Doom] Support -dropweapons.
     int drop_weapons;
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.

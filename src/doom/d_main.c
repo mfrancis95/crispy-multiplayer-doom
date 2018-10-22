@@ -102,6 +102,8 @@ boolean         nomonsters;	// checkparm of -nomonsters
 boolean         respawnparm;	// checkparm of -respawn
 boolean         fastparm;	// checkparm of -fast
 
+// [Crispy Multiplayer Doom] Support -alertmonsters.
+boolean alert_monsters;
 // [Crispy Multiplayer Doom] Support -dropweapons.
 boolean drop_weapons;
 // [Crispy Multiplayer Doom] Support -fullbrightplayers.
@@ -1525,6 +1527,8 @@ void D_DoomMain (void)
 
     devparm = M_CheckParm ("-devparm");
 
+    // [Crispy Multiplayer Doom] Support -alertmonsters.
+    alert_monsters = M_CheckParm("-alertmonsters");
     // [Crispy Multiplayer Doom] Support -dropweapons.
     drop_weapons = M_CheckParm("-dropweapons");
     // [Crispy Multiplayer Doom] Support -fullbrightplayers.
