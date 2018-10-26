@@ -120,6 +120,8 @@ boolean no_multiplayer_weapons;
 boolean no_pickup_switch;
 // [Crispy Multiplayer Doom] Support -noplayercollisions.
 boolean no_player_collisions;
+// [Crispy Multiplayer Doom] Support -noweaponstay.
+boolean no_weapon_stay;
 // [Crispy Multiplayer Doom] Support -respawnitems.
 boolean respawn_items;
 // [Crispy Multiplayer Doom] Support -sharecomputermaps.
@@ -1545,6 +1547,8 @@ void D_DoomMain (void)
     no_pickup_switch = M_CheckParm("-nopickupswitch");
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = M_CheckParm("-noplayercollisions");
+    // [Crispy Multiplayer Doom] Support -noweaponstay.
+    no_weapon_stay = M_CheckParm("-noweaponstay");
     // [Crispy Multiplayer Doom] Support -respawnitems.
     respawn_items = M_CheckParm("-respawnitems");
     // [Crispy Multiplayer Doom] Support -sharecomputermaps.
@@ -1572,8 +1576,10 @@ void D_DoomMain (void)
     // all items respawn after 30 seconds.
     //
 
-    if (M_CheckParm ("-altdeath"))
-	deathmatch = 2;
+    if (M_CheckParm ("-altdeath")) {
+        deathmatch = 2;
+        no_weapon_stay = true;
+    }
 
     //!
     // @category net

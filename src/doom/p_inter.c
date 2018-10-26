@@ -166,7 +166,8 @@ P_GiveWeapon
     boolean	gaveweapon;
 	
     if (netgame
-	&& (deathmatch!=2)
+    // [Crispy Multiplayer Doom] If -noweaponstay, weapons get picked up in netgames.
+	&& !no_weapon_stay
 	 && !dropped )
     {
 	// leave placed weapons forever on net games
@@ -208,6 +209,7 @@ P_GiveWeapon
     {
 	gaveweapon = true;
 	player->weaponowned[weapon] = true;
+
 	// [Crispy Multiplayer Doom] If -nopickupswitch, don't switch to new weapons.
 	if (!no_pickup_switch)
 	player->pendingweapon = weapon;
