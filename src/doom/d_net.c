@@ -139,6 +139,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     no_pickup_switch = settings->no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     no_player_collisions = settings->no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -nostartkeys.
+    no_start_keys = settings->no_start_keys;
     // [Crispy Multiplayer Doom] Support -noweaponstay.
     no_weapon_stay = settings->no_weapon_stay;
     // [Crispy Multiplayer Doom] Support -respawnitems.
@@ -201,6 +203,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->no_pickup_switch = no_pickup_switch;
     // [Crispy Multiplayer Doom] Support -noplayercollisions.
     settings->no_player_collisions = no_player_collisions;
+    // [Crispy Multiplayer Doom] Support -nostartkeys.
+    settings->no_start_keys = no_start_keys;
     // [Crispy Multiplayer Doom] Support -noweaponstay.
     settings->no_weapon_stay = no_weapon_stay;
     // [Crispy Multiplayer Doom] Support -respawnitems.

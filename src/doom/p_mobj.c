@@ -34,6 +34,7 @@
 
 #include "doomstat.h"
 
+#define IS_KEY(type) ((type == 5 || type == 6 || type == 13 || type == 38 || type == 39 || type == 40))
 #define IS_WEAPON(type) ((type >= 2001 && type <= 2006) || type == 82)
 
 void G_PlayerReborn (int player);
@@ -874,7 +875,8 @@ void P_SpawnPlayer (mapthing_t* mthing)
     P_SetupPsprites (p);
     
     // give all cards in death match mode
-    if (deathmatch)
+    // [Crispy Multiplayer Doom] Except if -nostartkeys.
+    if (deathmatch && !no_start_keys)
 	for (i=0 ; i<NUMCARDS ; i++)
 	    p->cards[i] = true;
 			
@@ -978,9 +980,9 @@ void P_SpawnMapThing (mapthing_t* mthing)
 		 mthing->x, mthing->y);
 	return;
     }
-		
     // don't spawn keycards and players in deathmatch
-    if (deathmatch && mobjinfo[i].flags & MF_NOTDMATCH)
+    // [Crispy Multiplayer Doom] Spawn keys if -nostartkeys.
+    if (deathmatch && !(IS_KEY(mthing->type) && no_start_keys) && (mobjinfo[i].flags & MF_NOTDMATCH))
 	return;
 		
     // don't spawn any monsters if -nomonsters
