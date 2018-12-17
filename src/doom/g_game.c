@@ -347,6 +347,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     int		forward;
     int		side;
     int		look;
+    static char autorunmsg[48];
 
     memset(cmd, 0, sizeof(ticcmd_t));
 
@@ -411,7 +412,6 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     // [crispy] toggle "always run"
     if (gamekeydown[key_toggleautorun])
     {
-        static char autorunmsg[24];
         static int joybspeed_old = 2;
 
         if (joybspeed >= MAX_JOY_BUTTONS)
@@ -431,6 +431,21 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
         S_StartSound(NULL, sfx_swtchn);
 
         gamekeydown[key_toggleautorun] = false;
+    }
+
+    // [crispy] Toggle vertical mouse movement
+    if (gamekeydown[key_togglenovert])
+    {
+        novert = !novert;
+
+        M_snprintf(autorunmsg, sizeof(autorunmsg),
+            "vertical mouse movement %s%s",
+            crstr[CR_GREEN],
+            !novert ? "ON" : "OFF");
+        players[consoleplayer].message = autorunmsg;
+        S_StartSound(NULL, sfx_swtchn);
+
+        gamekeydown[key_togglenovert] = false;
     }
 
     // let movement keys cancel each other out
@@ -1021,6 +1036,14 @@ static void G_ReadGameParms (void)
     nomonsters = M_CheckParm ("-nomonsters");
 }
  
+// [crispy] take a screenshot after rendering the next frame
+static void G_CrispyScreenShot()
+{
+	// [crispy] increase screenshot filename limit
+	V_ScreenShot("DOOM%04i.%s");
+	crispy->cleanscreenshot = 0;
+}
+
 //
 // G_Ticker
 // Make ticcmd_ts for the players.
@@ -1078,9 +1101,8 @@ void G_Ticker (void)
 	        crispy->screenshotmsg = 4;
 	        D_Display();
 	        I_FinishUpdate();
-	        crispy->cleanscreenshot = 0;
 	    }
-	    V_ScreenShot("DOOM%04i.%s"); // [crispy] increase screenshot filename limit
+	    crispy->post_rendering_hook = G_CrispyScreenShot;
             players[consoleplayer].message = DEH_String("screen shot");
 	    crispy->screenshotmsg = 2;
 	    gameaction = ga_nothing; 
@@ -1255,6 +1277,7 @@ void G_PlayerFinishLevel (int player)
 	 
     memset (p->powers, 0, sizeof (p->powers)); 
     memset (p->cards, 0, sizeof (p->cards)); 
+    memset (p->tryopen, 0, sizeof (p->tryopen)); // [crispy] blinking key or skull in the status bar
     p->mo->flags &= ~MF_SHADOW;		// cancel invisibility 
     p->extralight = 0;			// cancel gun flashes 
     p->fixedcolormap = 0;		// cancel ir gogles 
@@ -1921,6 +1944,31 @@ void G_DoLoadGame (void)
         I_Error("Could not load savegame %s", savename);
     }
 
+    // [crispy] read extended savegame data
+    if (crispy->extsaveg)
+    {
+        // [crispy] first pass, read "savewadfilename"
+        P_ReadExtendedSaveGameData(0);
+    }
+    // [crispy] check if WAD file is valid to restore saved map
+    if (savewadfilename)
+    {
+        // [crispy] strings are not equal
+        if (!savemaplumpinfo || strcmp(savewadfilename, savemaplumpinfo->wad_file->basename))
+        {
+            M_ForceLoadGame();
+            fclose(save_stream);
+            return;
+        }
+        else
+        // [crispy] strings are equal, but not identical
+        if (savewadfilename != savemaplumpinfo->wad_file->basename)
+        {
+            free(savewadfilename);
+        }
+    }
+    savewadfilename = NULL;
+
     savegame_error = false;
 
     if (!P_ReadSaveGameHeader())
@@ -1936,29 +1984,6 @@ void G_DoLoadGame (void)
     
     // load a base level 
     G_InitNew (gameskill, gameepisode, gamemap); 
-    // [crispy] read extended savegame data
-    if (crispy->extsaveg)
-    {
-        P_ReadExtendedSaveGameData(0);
-    }
-    // [crispy] check if WAD file is valid to restore saved map
-    if (savewadfilename)
-    {
-        // [crispy] strings are not equal
-        if (strcmp(savewadfilename, maplumpinfo->wad_file->basename))
-        {
-            M_ForceLoadGame();
-            fclose(save_stream);
-            return;
-        }
-        else
-        // [crispy] strings are equal, but not identical
-        if (savewadfilename != maplumpinfo->wad_file->basename)
-        {
-            free(savewadfilename);
-        }
-    }
-    savewadfilename = NULL;
  
     leveltime = savedleveltime;
     savedleveltime = 0;

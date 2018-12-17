@@ -353,6 +353,8 @@ static st_binicon_t	w_armsbg;
 
 // weapon ownership widgets
 static st_multicon_t	w_arms[6];
+// [crispy] show SSG availability in the Shotgun slot of the arms widget
+static int st_shotguns;
 
 // face status widget
 static st_multicon_t	w_faces; 
@@ -388,6 +390,8 @@ static int	st_faceindex = 0;
 
 // holds key-type for each key box on bar
 static int	keyboxes[3]; 
+// [crispy] blinking key or skull in the status bar
+int		st_keyorskull[3];
 
 // a random number per tick
 static int	st_randomnumber;  
@@ -604,6 +608,21 @@ static int ST_cheat_spechits()
     return (speciallines);
 }
 
+// [crispy] only give available weapons
+static boolean WeaponAvailable (int w)
+{
+	if (w < 0 || w >= NUMWEAPONS)
+	    return false;
+
+	if (w == wp_supershotgun && !crispy->havessg)
+	    return false;
+
+	if ((w == wp_bfg || w == wp_plasma) && gamemode == shareware)
+	    return false;
+
+	return true;
+}
+
 // Respond to keyboard input events,
 //  intercept cheats.
 boolean
@@ -687,6 +706,7 @@ ST_Responder (event_t* ev)
 	}
 
 	for (i=0;i<NUMWEAPONS;i++)
+	 if (WeaponAvailable(i)) // [crispy] only give available weapons
 	  plyr->weaponowned[i] = true;
 	
 	for (i=0;i<NUMAMMO;i++)
@@ -712,6 +732,7 @@ ST_Responder (event_t* ev)
 	}
 
 	for (i=0;i<NUMWEAPONS;i++)
+	 if (WeaponAvailable(i)) // [crispy] only give available weapons
 	  plyr->weaponowned[i] = true;
 	
 	for (i=0;i<NUMAMMO;i++)
@@ -746,7 +767,9 @@ ST_Responder (event_t* ev)
 	  S_ChangeMusic(0, 2);
 	}
 	else
-	if (gamemode == commercial || gameversion < exe_ultimate)
+	// [JN] Fixed: using a proper IDMUS selection for shareware
+	// and registered game versions.
+	if (gamemode == commercial /* || gameversion < exe_ultimate */ )
 	{
 	  musnum = mus_runnin + (buf[0]-'0')*10 + buf[1]-'0' - 1;
 	  
@@ -944,13 +967,8 @@ ST_Responder (event_t* ev)
 	cht_GetParam(&cheat_weapon, buf);
 	w = *buf - '1';
 
-	if (w < 0 || w >= NUMWEAPONS)
-	    return false;
-
-	if (w == wp_supershotgun && !crispy->havessg)
-	    return false;
-
-	if ((w == wp_bfg || w == wp_plasma) && gamemode == shareware)
+	// [crispy] only give available weapons
+	if (!WeaponAvailable(w))
 	    return false;
 
 	// make '1' apply beserker strength toggle
@@ -1139,9 +1157,13 @@ ST_Responder (event_t* ev)
           }
       }
 
+      // [crispy] prevent idclev to nonexistent levels exiting the game
+      if (P_GetNumForMap(epsd, map, false) >= 0)
+      {
       // So be it.
       plyr->message = DEH_String(STSTR_CLEV);
       G_DeferedInitNew(gameskill, epsd, map);
+      }
 
       // [crispy] eat key press, i.e. don't change weapon upon level change
       return true;
@@ -1397,6 +1419,30 @@ void ST_updateWidgets(void)
 
 	if (plyr->cards[i+3])
 	    keyboxes[i] = (keyboxes[i] == -1) ? i+3 : i+6; // [crispy] support combined card and skull keys
+
+	// [crispy] blinking key or skull in the status bar
+	if (plyr->tryopen[i])
+	{
+#if defined(CRISPY_KEYBLINK_WITH_SOUND)
+		if (!(plyr->tryopen[i] & (2*KEYBLINKMASK-1)))
+		{
+			S_StartSound(NULL, sfx_itemup);
+		}
+#endif
+#if defined(CRISPY_KEYBLINK_IN_CLASSIC_HUD)
+		if (screenblocks < CRISPY_HUD && !(plyr->tryopen[i] & (KEYBLINKMASK-1)))
+		{
+			st_firsttime = true;
+		}
+#endif
+		plyr->tryopen[i]--;
+#if !defined(CRISPY_KEYBLINK_IN_CLASSIC_HUD)
+		if (screenblocks >= CRISPY_HUD)
+#endif
+		{
+			keyboxes[i] = (plyr->tryopen[i] & KEYBLINKMASK) ? i + st_keyorskull[i] : -1;
+		}
+	}
     }
 
     // refresh everything if this is him coming back to life
@@ -1722,6 +1768,9 @@ void ST_drawWidgets(boolean refresh)
     STlib_updateBinIcon(&w_armsbg, refresh);
     }
 
+    // [crispy] show SSG availability in the Shotgun slot of the arms widget
+    st_shotguns = plyr->weaponowned[wp_shotgun] | plyr->weaponowned[wp_supershotgun];
+
     for (i=0;i<6;i++)
 	STlib_updateMultIcon(&w_arms[i], refresh || screenblocks >= CRISPY_HUD);
 
@@ -1998,6 +2047,8 @@ void ST_createWidgets(void)
                            &plyr->weaponowned[i+1],
                            &st_armson);
     }
+    // [crispy] show SSG availability in the Shotgun slot of the arms widget
+    w_arms[1].inum = &st_shotguns;
 
     // frags sum
     STlib_initNum(&w_frags,

@@ -178,7 +178,7 @@ long M_FileLength(FILE *handle)
 // M_WriteFile
 //
 
-boolean M_WriteFile(const char *name, void *source, int length)
+boolean M_WriteFile(const char *name, const void *source, int length)
 {
     FILE *handle;
     int	count;
@@ -535,7 +535,7 @@ boolean M_StringConcat(char *dest, const char *src, size_t dest_size)
 
 boolean M_StringStartsWith(const char *s, const char *prefix)
 {
-    return strlen(s) > strlen(prefix)
+    return strlen(s) >= strlen(prefix)
         && strncmp(s, prefix, strlen(prefix)) == 0;
 }
 

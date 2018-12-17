@@ -110,6 +110,7 @@ byte*		rejectmatrix;
 mapthing_t	deathmatchstarts[MAX_DEATHMATCH_STARTS];
 mapthing_t*	deathmatch_p;
 mapthing_t	playerstarts[MAXPLAYERS];
+boolean     playerstartsingame[MAXPLAYERS];
 
 // [crispy] recalculate seg offsets
 // adapted from prboom-plus/src/p_setup.c:474-482
@@ -401,7 +402,8 @@ void P_LoadSectors (int lump)
         ss->interpfloorheight = ss->floorheight;
         ss->oldceilingheight = ss->ceilingheight;
         ss->interpceilingheight = ss->ceilingheight;
-        ss->oldgametic = 0;
+        // [crispy] inhibit sector interpolation during the 0th gametic
+        ss->oldgametic = -1;
     }
 	
     W_ReleaseLumpNum(lump);
@@ -501,12 +503,6 @@ void P_LoadThings (int lump)
     data = W_CacheLumpNum (lump,PU_STATIC);
     numthings = W_LumpLength (lump) / sizeof(mapthing_t);
 	
-    // [crispy] warn about missing thing
-    if (!data || !numthings)
-    {
-	I_Error("P_LoadThings: No things in map!");
-    }
-
     mt = (mapthing_t *)data;
     for (i=0 ; i<numthings ; i++, mt++)
     {
@@ -548,6 +544,18 @@ void P_LoadThings (int lump)
 	}
 
 	P_SpawnMapThing(&spawnthing);
+    }
+
+    if (!deathmatch)
+    {
+        for (i = 0; i < MAXPLAYERS; i++)
+        {
+            if (playeringame[i] && !playerstartsingame[i])
+            {
+                I_Error("P_LoadThings: Player %d start missing (vanilla crashes here)", i + 1);
+            }
+            playerstartsingame[i] = false;
+        }
     }
 
     W_ReleaseLumpNum(lump);
@@ -1093,6 +1101,43 @@ const char *skilltable[] =
 // [crispy] pointer to the current map lump info struct
 lumpinfo_t *maplumpinfo;
 
+// [crispy] factor out map lump name and number finding into a separate function
+int P_GetNumForMap (int episode, int map, boolean critical)
+{
+    char	lumpname[9];
+    int		lumpnum;
+
+    // find map name
+    if ( gamemode == commercial)
+    {
+	if (map<10)
+	    DEH_snprintf(lumpname, 9, "map0%i", map);
+	else
+	    DEH_snprintf(lumpname, 9, "map%i", map);
+    }
+    else
+    {
+	lumpname[0] = 'E';
+	lumpname[1] = '0' + episode;
+	lumpname[2] = 'M';
+	lumpname[3] = '0' + map;
+	lumpname[4] = 0;
+    }
+
+    // [crispy] special-casing for E1M10 "Sewers" support
+    if (crispy->havee1m10 && episode == 1 && map == 10)
+	DEH_snprintf(lumpname, 9, "E1M10");
+
+    lumpnum = critical ? W_GetNumForName (lumpname) : W_CheckNumForName (lumpname);
+
+    if (nervewadfile && episode != 2 && map <= 9)
+    {
+        lumpnum = W_CheckNumForNameFromTo (lumpname, lumpnum - 1, 0);
+    }
+
+    return lumpnum;
+}
+
 //
 // P_SetupLevel
 //
@@ -1135,7 +1180,7 @@ P_SetupLevel
     {
         if (gamemission == pack_nerve)
         {
-            gameepisode = 2;
+            episode = gameepisode = 2;
         }
     }
 
@@ -1154,6 +1199,8 @@ P_SetupLevel
     // if working with a devlopment map, reload it
     W_Reload ();
 
+// [crispy] factor out map lump name and number finding into a separate function
+/*
     // find map name
     if ( gamemode == commercial)
     {
@@ -1171,17 +1218,10 @@ P_SetupLevel
 	lumpname[4] = 0;
     }
 
-    // [crispy] special-casing for E1M10 "Sewers" support
-    if (crispy->havee1m10 && episode == 1 && map == 10)
-	DEH_snprintf(lumpname, 9, "E1M10");
-
     lumpnum = W_GetNumForName (lumpname);
+*/
+    lumpnum = P_GetNumForMap (episode, map, true);
 	
-    if (nervewadfile && gamemission != pack_nerve && map <= 9)
-    {
-        lumpnum = W_CheckNumForNameFromTo (lumpname, lumpnum - 1, 0);
-    }
-
     // [crispy] pointer to the current map lump info struct
     maplumpinfo = lumpinfo[lumpnum];
 
@@ -1251,6 +1291,8 @@ P_SetupLevel
     P_RemoveSlimeTrails();
     // [crispy] fix long wall wobble
     P_SegLengths(false);
+    // [crispy] blinking key or skull in the status bar
+    memset(st_keyorskull, 0, sizeof(st_keyorskull));
 
     bodyqueslot = 0;
     deathmatch_p = deathmatchstarts;

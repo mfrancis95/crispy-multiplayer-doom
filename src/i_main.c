@@ -43,6 +43,14 @@ int main(int argc, char **argv)
     myargc = argc;
     myargv = argv;
 
+    //!
+    // Print the program version and exit.
+    //
+    if (M_ParmExists("-version") || M_ParmExists("--version")) {
+        puts(PACKAGE_STRING);
+        exit(0);
+    }
+
     crispy->platform = SDL_GetPlatform();
     {
         char buf[16];
@@ -53,6 +61,10 @@ int main(int argc, char **argv)
     }
 
     M_FindResponseFile();
+
+    #ifdef SDL_HINT_NO_SIGNAL_HANDLERS
+    SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+    #endif
 
     // start doom
 

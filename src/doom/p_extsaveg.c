@@ -439,9 +439,14 @@ static void P_ReadKeyValuePairs (int pass)
 	}
 }
 
+// [crispy] pointer to the info struct for the map lump about to load
+lumpinfo_t *savemaplumpinfo = NULL;
+
 void P_ReadExtendedSaveGameData (int pass)
 {
 	long p, curpos, endpos;
+	byte episode, map;
+	int lumpnum = -1;
 
 	line = malloc(MAX_LINE_LEN);
 	string = malloc(MAX_STRING_LEN);
@@ -449,7 +454,7 @@ void P_ReadExtendedSaveGameData (int pass)
 	// [crispy] two-pass reading of extended savegame data
 	if (pass == 1)
 	{
-		P_ReadKeyValuePairs(pass);
+		P_ReadKeyValuePairs(1);
 
 		free(line);
 		free(string);
@@ -459,6 +464,25 @@ void P_ReadExtendedSaveGameData (int pass)
 
 	curpos = ftell(save_stream);
 
+	// [crispy] check which map we would want to load
+	fseek(save_stream, SAVESTRINGSIZE + VERSIONSIZE + 1, SEEK_SET); // [crispy] + 1 for "gameskill"
+	if (fread(&episode, 1, 1, save_stream) == 1 &&
+	    fread(&map, 1, 1, save_stream) == 1)
+	{
+		lumpnum = P_GetNumForMap ((int) episode, (int) map, false);
+	}
+
+	if (lumpnum >= 0)
+	{
+		savemaplumpinfo = lumpinfo[lumpnum];
+	}
+	else
+	{
+		// [crispy] unavailable map!
+		savemaplumpinfo = NULL;
+	}
+
+	// [crispy] read key/value pairs past the end of the regular savegame data
 	fseek(save_stream, 0, SEEK_END);
 	endpos = ftell(save_stream);
 
@@ -483,7 +507,7 @@ void P_ReadExtendedSaveGameData (int pass)
 			if (sscanf(line, "%s", string) == 1 &&
 			    !strncmp(string, extsavegdata[0].key, MAX_STRING_LEN))
 			{
-				P_ReadKeyValuePairs(pass);
+				P_ReadKeyValuePairs(0);
 				break;
 			}
 		}
@@ -492,5 +516,6 @@ void P_ReadExtendedSaveGameData (int pass)
 	free(line);
 	free(string);
 
+	// [crispy] back to where we started
 	fseek(save_stream, curpos, SEEK_SET);
 }

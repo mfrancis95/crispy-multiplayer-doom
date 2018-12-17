@@ -63,7 +63,6 @@ typedef struct
 	int secretmessage;
 	int smoothlight;
 	int smoothscaling;
-	int sndchannels;
 	int soundfix;
 	int soundfull;
 	int soundmono;
@@ -98,6 +97,14 @@ extern crispy_t *const crispy;
 extern const crispy_t *critical;
 
 extern void CheckCrispySingleplayer (boolean singleplayer);
+
+enum
+{
+    ASPECTRATIO_OFF,
+    ASPECTRATIO_4_3,
+    ASPECTRATIO_16_10,
+    NUM_ASPECTRATIOS,
+};
 
 enum
 {
@@ -167,14 +174,6 @@ enum
     JUMP_LOW,
     JUMP_HIGH,
     NUM_JUMPS
-};
-
-enum
-{
-    SNDCHANNELS_8,
-    SNDCHANNELS_16,
-    SNDCHANNELS_32,
-    NUM_SNDCHANNELS
 };
 
 enum

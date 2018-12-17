@@ -421,7 +421,7 @@ void WI_drawLF(void)
     if ((gamemode == commercial && (unsigned)wbs->last >= NUMCMAPS) ||
         (gamemode != commercial && (unsigned)wbs->last >= (crispy->havee1m10 ? NUMMAPS + 1 : NUMMAPS)))
     {
-        V_DrawPatch((SCREENWIDTH - SHORT(finished->width)) / 2, y, finished);
+        V_DrawPatch((ORIGWIDTH - SHORT(finished->width)) / 2, y, finished);
         return;
     }
 
@@ -439,7 +439,7 @@ void WI_drawLF(void)
     else if (wbs->last == NUMCMAPS)
     {
         // MAP33 - draw "Finished!" only
-        V_DrawPatch((SCREENWIDTH - SHORT(finished->width)) / 2, y, finished);
+        V_DrawPatch((ORIGWIDTH - SHORT(finished->width)) / 2, y, finished);
     }
     else if (wbs->last > NUMCMAPS)
     {
@@ -751,7 +751,13 @@ WI_drawTime
 	    if (div==60 || t / div)
 		V_DrawPatch(x, y, colon);
 	    
-	} while (t / div);
+	} while (t / div && div < 3600);
+
+	// [crispy] print at most in hhhh:mm:ss format
+	if ((n = (t / div)))
+	{
+	    x = WI_drawNum(x, y, n, -1);
+	}
     }
     else
     {

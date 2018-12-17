@@ -452,6 +452,7 @@ enum
     crispness_uncapped,
     crispness_vsync,
     crispness_smoothscaling,
+    crispness_aspectratio,
     crispness_sep_rendering_,
 
     crispness_sep_visual,
@@ -475,6 +476,7 @@ static menuitem_t Crispness1Menu[]=
     {1,"",	M_CrispyToggleUncapped,'u'},
     {1,"",	M_CrispyToggleVsync,'v'},
     {1,"",	M_CrispyToggleSmoothScaling,'s'},
+    {1,"",	M_CrispyToggleAspectRatio,'f'},
     {-1,"",0,'\0'},
     {-1,"",0,'\0'},
     {1,"",	M_CrispyToggleColoredhud,'c'},
@@ -494,7 +496,7 @@ static menu_t  Crispness1Def =
     &OptionsDef,
     Crispness1Menu,
     M_DrawCrispness1,
-    48,36,
+    48,28,
     1
 };
 
@@ -541,7 +543,7 @@ static menu_t  Crispness2Def =
     &OptionsDef,
     Crispness2Menu,
     M_DrawCrispness2,
-    48,36,
+    48,28,
     1
 };
 
@@ -594,7 +596,7 @@ static menu_t  Crispness3Def =
     &OptionsDef,
     Crispness3Menu,
     M_DrawCrispness3,
-    48,36,
+    48,28,
     1
 };
 
@@ -642,7 +644,7 @@ static menu_t  Crispness4Def =
     &OptionsDef,
     Crispness4Menu,
     M_DrawCrispness4,
-    48,36,
+    48,28,
     1
 };
 
@@ -898,12 +900,6 @@ void M_LoadSelect(int choice)
 //
 void M_LoadGame (int choice)
 {
-    // [crispy] forbid New Game and (Quick) Load while recording a demo
-    if (demorecording)
-    {
-	return;
-    }
-
     // [crispy] allow loading game while multiplayer demo playback
     if (netgame && !demoplayback)
     {
@@ -1017,7 +1013,7 @@ void M_SaveGame (int choice)
 //
 //      M_QuickSave
 //
-char    tempstring[80];
+static char tempstring[90];
 
 void M_QuickSaveResponse(int key)
 {
@@ -1054,9 +1050,10 @@ void M_QuickSave(void)
                                   savegamestrings[quickSaveSlot],
                                   crstr[CR_NONE],
                                   NULL);
-    DEH_snprintf(tempstring, 80, QSPROMPT, savegamestring);
+    DEH_snprintf(tempstring, sizeof(tempstring),
+                 QSPROMPT, savegamestring);
     free(savegamestring);
-    M_StartMessage(tempstring,M_QuickSaveResponse,true);
+    M_StartMessage(tempstring, M_QuickSaveResponse, true);
 }
 
 
@@ -1099,9 +1096,10 @@ void M_QuickLoad(void)
                                   savegamestrings[quickSaveSlot],
                                   crstr[CR_NONE],
                                   NULL);
-    DEH_snprintf(tempstring, 80, QLPROMPT, savegamestring);
+    DEH_snprintf(tempstring, sizeof(tempstring),
+                 QLPROMPT, savegamestring);
     free(savegamestring);
-    M_StartMessage(tempstring,M_QuickLoadResponse,true);
+    M_StartMessage(tempstring, M_QuickLoadResponse, true);
 }
 
 
@@ -1220,7 +1218,7 @@ void M_DrawNewGame(void)
 
 void M_NewGame(int choice)
 {
-    // [crispy] forbid New Game and (Quick) Load while recording a demo
+    // [crispy] forbid New Game while recording a demo
     if (demorecording)
     {
 	return;
@@ -1391,7 +1389,7 @@ static void M_DrawCrispnessHeader(char *item)
 {
     M_snprintf(crispy_menu_text, sizeof(crispy_menu_text),
                "%s%s", crstr[CR_GOLD], item);
-    M_WriteText(ORIGWIDTH/2 - M_StringWidth(item) / 2, 20, crispy_menu_text);
+    M_WriteText(ORIGWIDTH/2 - M_StringWidth(item) / 2, 12, crispy_menu_text);
 }
 
 static void M_DrawCrispnessSeparator(int y, char *item)
@@ -1437,6 +1435,7 @@ static void M_DrawCrispness1(void)
     M_DrawCrispnessItem(crispness_uncapped, "Uncapped Framerate", crispy->uncapped, true);
     M_DrawCrispnessItem(crispness_vsync, "Enable VSync", crispy->vsync, !force_software_renderer);
     M_DrawCrispnessItem(crispness_smoothscaling, "Smooth Pixel Scaling", crispy->smoothscaling, true);
+    M_DrawCrispnessMultiItem(crispness_aspectratio, "Force Aspect Ratio", multiitem_aspectratio, aspect_ratio_correct, true);
 
     M_DrawCrispnessSeparator(crispness_sep_visual, "Visual");
     M_DrawCrispnessMultiItem(crispness_coloredhud, "Colorize HUD Elements", multiitem_coloredhud, crispy->coloredhud, true);
@@ -1461,7 +1460,7 @@ static void M_DrawCrispness2(void)
     M_DrawCrispnessSeparator(crispness_sep_audible, "Audible");
     M_DrawCrispnessItem(crispness_soundfull, "Play sounds in full length", crispy->soundfull, true);
     M_DrawCrispnessItem(crispness_soundfix, "Misc. Sound Fixes", crispy->soundfix, true);
-    M_DrawCrispnessMultiItem(crispness_sndchannels, "Sound Channels", multiitem_sndchannels, crispy->sndchannels, true);
+    M_DrawCrispnessMultiItem(crispness_sndchannels, "Sound Channels", multiitem_sndchannels, snd_channels >> 4, true);
     M_DrawCrispnessItem(crispness_soundmono, "Mono SFX", crispy->soundmono, true);
 
     M_DrawCrispnessSeparator(crispness_sep_navigational, "Navigational");
@@ -2482,17 +2481,9 @@ boolean M_Responder (event_t* ev)
         }
         else if (key == key_menu_load)     // Load
         {
-	    // [crispy] forbid New Game and (Quick) Load while recording a demo
-	    if (demorecording)
-	    {
-		S_StartSound(NULL,sfx_oof);
-	    }
-	    else
-	    {
 	    M_StartControlPanel();
 	    S_StartSound(NULL,sfx_swtchn);
 	    M_LoadGame(0);
-	    }
 	    return true;
         }
         else if (key == key_menu_volume)   // Sound Volume
@@ -2529,16 +2520,8 @@ boolean M_Responder (event_t* ev)
         }
         else if (key == key_menu_qload)    // Quickload
         {
-	    // [crispy] forbid New Game and (Quick) Load while recording a demo
-	    if (demorecording)
-	    {
-		S_StartSound(NULL,sfx_oof);
-	    }
-	    else
-	    {
 	    S_StartSound(NULL,sfx_swtchn);
 	    M_QuickLoad();
-	    }
 	    return true;
         }
         else if (key == key_menu_quit)     // Quit DOOM
@@ -2831,9 +2814,9 @@ void M_Drawer (void)
 	y = ORIGHEIGHT/2 - M_StringHeight(messageString) / 2;
 	while (messageString[start] != '\0')
 	{
-	    int foundnewline = 0;
+	    boolean foundnewline = false;
 
-            for (i = 0; i < strlen(messageString + start); i++)
+            for (i = 0; messageString[start + i] != '\0'; i++)
             {
                 if (messageString[start + i] == '\n')
                 {
@@ -2844,7 +2827,7 @@ void M_Drawer (void)
                         string[i] = '\0';
                     }
 
-                    foundnewline = 1;
+                    foundnewline = true;
                     start += i + 1;
                     break;
                 }
@@ -2889,7 +2872,7 @@ void M_Drawer (void)
 	    // [crispy] shade unavailable menu items
 	    if ((currentMenu == &MainDef && i == savegame && (!usergame || gamestate != GS_LEVEL)) ||
 	        (currentMenu == &OptionsDef && i == endgame && (!usergame || netgame)) ||
-	        (currentMenu == &MainDef && i == loadgame && ((netgame && !demoplayback) || demorecording)) ||
+	        (currentMenu == &MainDef && i == loadgame && (netgame && !demoplayback)) ||
 	        (currentMenu == &MainDef && i == newgame && (demorecording || (netgame && !demoplayback))))
 	        dp_translation = cr[CR_DARK];
 
@@ -3099,9 +3082,10 @@ static void M_ForceLoadGameResponse(int key)
 	free(savegwarning);
 	free(savewadfilename);
 
-	if (key != key_menu_confirm)
+	if (key != key_menu_confirm || !savemaplumpinfo)
 	{
-		M_EndGameResponse(key_menu_confirm);
+		// [crispy] no need to end game anymore when denied to load savegame
+		//M_EndGameResponse(key_menu_confirm);
 		savewadfilename = NULL;
 
 		// [crispy] reload Load Game menu
@@ -3110,21 +3094,27 @@ static void M_ForceLoadGameResponse(int key)
 		return;
 	}
 
-	savewadfilename = (char *)maplumpinfo->wad_file->basename;
+	savewadfilename = (char *)savemaplumpinfo->wad_file->basename;
 	gameaction = ga_loadgame;
 }
 
 void M_ForceLoadGame()
 {
 	savegwarning =
+	savemaplumpinfo ?
 	M_StringJoin("This savegame requires the file\n",
 	             crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
-	             "to restore ", crstr[CR_GOLD], maplumpinfo->name, crstr[CR_NONE], " .\n\n",
+	             "to restore ", crstr[CR_GOLD], savemaplumpinfo->name, crstr[CR_NONE], " .\n\n",
 	             "Continue to restore from\n",
-	             crstr[CR_GOLD], maplumpinfo->wad_file->basename, crstr[CR_NONE], " ?\n\n",
-	             PRESSYN, NULL);
+	             crstr[CR_GOLD], savemaplumpinfo->wad_file->basename, crstr[CR_NONE], " ?\n\n",
+	             PRESSYN, NULL) :
+	M_StringJoin("This savegame requires the file\n",
+	             crstr[CR_GOLD], savewadfilename, crstr[CR_NONE], "\n",
+	             "to restore a map that is\n",
+	             "currently not available!\n\n",
+	             PRESSKEY, NULL) ;
 
-	M_StartMessage(savegwarning, M_ForceLoadGameResponse, true);
+	M_StartMessage(savegwarning, M_ForceLoadGameResponse, savemaplumpinfo != NULL);
 	messageToPrint = 2;
 	S_StartSound(NULL,sfx_swtchn);
 }

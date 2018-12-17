@@ -26,6 +26,7 @@ typedef struct
     char *name;
 } multiitem_t;
 
+extern multiitem_t multiitem_aspectratio[NUM_ASPECTRATIOS];
 extern multiitem_t multiitem_brightmaps[NUM_BRIGHTMAPS];
 extern multiitem_t multiitem_centerweapon[NUM_CENTERWEAPON];
 extern multiitem_t multiitem_coloredhud[NUM_COLOREDHUD];
@@ -36,9 +37,10 @@ extern multiitem_t multiitem_demotimer[NUM_DEMOTIMERS];
 extern multiitem_t multiitem_demotimerdir[];
 extern multiitem_t multiitem_freelook[NUM_FREELOOKS];
 extern multiitem_t multiitem_jump[NUM_JUMPS];
-extern multiitem_t multiitem_sndchannels[NUM_SNDCHANNELS];
+extern multiitem_t multiitem_sndchannels[4];
 extern multiitem_t multiitem_translucency[NUM_TRANSLUCENCY];
 
+extern void M_CrispyToggleAspectRatio(int choice);
 extern void M_CrispyToggleAutomapstats(int choice);
 extern void M_CrispyToggleBrightmaps(int choice);
 extern void M_CrispyToggleCenterweapon(int choice);

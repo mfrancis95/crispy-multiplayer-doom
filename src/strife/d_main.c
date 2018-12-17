@@ -855,10 +855,8 @@ void D_IdentifyVersion(void)
             voiceswad = M_SafeFilePath(iwadpath, "voices.wad");
             Z_Free(iwadpath);
 
-            if(!M_FileExists(voiceswad))
-                Z_Free(voiceswad);
-            else
-                name = voiceswad; // STRIFE-FIXME: memory leak!!
+            name = M_FileCaseExists(voiceswad);
+            Z_Free(voiceswad);
         }
 
         // not found? try global search paths
@@ -877,6 +875,7 @@ void D_IdentifyVersion(void)
         {
             // add it.
             D_AddFile(name);
+            free(name);
         }
     }
 }
@@ -1735,6 +1734,20 @@ void D_DoomMain (void)
     D_AddFile(iwadfile);
     W_CheckCorrectIWAD(strife);
     D_IdentifyVersion();
+
+    //!
+    // @category mod
+    //
+    // Disable auto-loading of .wad files.
+    //
+    if (!M_ParmExists("-noautoload"))
+    {
+        char *autoload_dir;
+        autoload_dir = M_GetAutoloadDir("strife1.wad");
+        DEH_AutoLoadPatches(autoload_dir);
+        W_AutoLoadWADs(autoload_dir);
+        free(autoload_dir);
+    }
 
     // Load dehacked patches specified on the command line.
     DEH_ParseCommandLine();

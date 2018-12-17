@@ -25,6 +25,13 @@
 
 #include "m_crispy.h"
 
+multiitem_t multiitem_aspectratio[NUM_ASPECTRATIOS] =
+{
+    {ASPECTRATIO_OFF, "none"},
+    {ASPECTRATIO_4_3, "4:3"},
+    {ASPECTRATIO_16_10, "16:10"},
+};
+
 multiitem_t multiitem_brightmaps[NUM_BRIGHTMAPS] =
 {
     {BRIGHTMAPS_OFF, "none"},
@@ -109,20 +116,39 @@ multiitem_t multiitem_translucency[NUM_TRANSLUCENCY] =
     {TRANSLUCENCY_BOTH, "both"},
 };
 
-multiitem_t multiitem_sndchannels[NUM_SNDCHANNELS] =
+multiitem_t multiitem_sndchannels[4] =
 {
-    {SNDCHANNELS_8, "8"},
-    {SNDCHANNELS_16, "16"},
-    {SNDCHANNELS_32, "32"},
+    {8, "8"},
+    {16, "16"},
+    {32, "32"},
 };
 
-extern void AM_ReInit (void);
+extern void AM_ReInit (boolean rescale);
 extern void EnableLoadingDisk (void);
 extern void P_SegLengths (boolean contrast_only);
 extern void R_ExecuteSetViewSize (void);
 extern void R_InitLightTables (void);
 extern void SetVideoMode (boolean);
 extern void S_UpdateSndChannels (void);
+
+static void M_CrispyToggleAspectRatioHook (void)
+{
+    aspect_ratio_correct = (aspect_ratio_correct + 1) % NUM_ASPECTRATIOS;
+
+    // [crispy] re-initialize framebuffers, textures and renderer
+    I_InitGraphics();
+    // [crispy] re-set rendering framebuffer
+    R_ExecuteSetViewSize();
+    // [crispy] re-set automap framebuffer
+    AM_ReInit(false);
+}
+
+void M_CrispyToggleAspectRatio(int choice)
+{
+    choice = 0;
+
+    crispy->post_rendering_hook = M_CrispyToggleAspectRatioHook;
+}
 
 void M_CrispyToggleAutomapstats(int choice)
 {
@@ -314,7 +340,7 @@ static void M_CrispyToggleHiresHook (void)
     // [crispy] re-calculate disk icon coordinates
     EnableLoadingDisk();
     // [crispy] re-calculate automap coordinates
-    AM_ReInit();
+    AM_ReInit(true);
 }
 
 void M_CrispyToggleHires(int choice)
@@ -425,7 +451,6 @@ void M_CrispyToggleSmoothLighting(int choice)
 void M_CrispyToggleSndChannels(int choice)
 {
     choice = 0;
-    crispy->sndchannels = (crispy->sndchannels + 1) % NUM_SNDCHANNELS;
 
     S_UpdateSndChannels();
 }

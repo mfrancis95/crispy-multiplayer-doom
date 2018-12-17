@@ -349,21 +349,10 @@ void D_StartNetGame(net_gamesettings_t *settings,
     //!
     // @category net
     //
-    // Use new network client sync code rather than the classic
-    // sync code. This is currently disabled by default because it
-    // has some bugs.
+    // Use original network client sync code rather than the improved
+    // sync code.
     //
-    if (M_CheckParm("-newsync") > 0)
-        settings->new_sync = 1;
-    else
-        settings->new_sync = 0;
-
-    // TODO: New sync code is not enabled by default because it's
-    // currently broken. 
-    //if (M_CheckParm("-oldsync") > 0)
-    //    settings->new_sync = 0;
-    //else
-    //    settings->new_sync = 1;
+    settings->new_sync = !M_ParmExists("-oldsync");
 
     //!
     // @category net
@@ -690,6 +679,11 @@ void TryRunTics (void)
     int	availabletics;
     int	counts;
 
+    // [AM] If we've uncapped the framerate and there are no tics
+    //      to run, return early instead of waiting around.
+    extern int leveltime;
+    #define return_early (crispy->uncapped && counts == 0 && leveltime > oldleveltime && screenvisible)
+
     // get real tics
     entertic = I_GetTime() / ticdup;
     realtics = entertic - oldentertics;
@@ -716,11 +710,14 @@ void TryRunTics (void)
     if (new_sync)
     {
 	counts = availabletics;
+
+        // [AM] If we've uncapped the framerate and there are no tics
+        //      to run, return early instead of waiting around.
+        if (return_early)
+            return;
     }
     else
     {
-        extern int leveltime;
-
         // decide how many tics to run
         if (realtics < availabletics-1)
             counts = realtics+1;
@@ -731,7 +728,7 @@ void TryRunTics (void)
 
         // [AM] If we've uncapped the framerate and there are no tics
         //      to run, return early instead of waiting around.
-        if (counts == 0 && crispy->uncapped && leveltime > oldleveltime && screenvisible)
+        if (return_early)
             return;
 
         if (counts < 1)

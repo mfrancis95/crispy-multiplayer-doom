@@ -1,4 +1,4 @@
-AC_INIT(Crispy Doom, 5.3,
+AC_INIT(Crispy Doom, 5.4,
         fabian@greffrath.com, crispy-doom)
 
 PACKAGE_SHORTNAME=${PACKAGE_NAME% Doom}
@@ -15,6 +15,7 @@ AC_CANONICAL_HOST
 
 orig_CFLAGS="$CFLAGS"
 
+AM_PROG_AR
 AC_PROG_CC
 AC_PROG_RANLIB
 AC_CHECK_PROG(HAVE_PYTHON, python, true, false)
@@ -97,7 +98,7 @@ AC_CHECK_LIB(m, log)
 # [crispy] use stdlib's qsort() function for sorting the vissprites[] array
 AC_CHECK_FUNCS(qsort)
 
-AC_CHECK_HEADERS([linux/kd.h dev/isa/spkrio.h dev/speaker/speaker.h])
+AC_CHECK_HEADERS([dirent.h linux/kd.h dev/isa/spkrio.h dev/speaker/speaker.h])
 AC_CHECK_FUNCS(mmap ioperm)
 AC_CHECK_DECLS([strcasecmp, strncasecmp], [], [], [[#include <strings.h>]])
 

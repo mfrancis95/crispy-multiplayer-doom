@@ -152,6 +152,20 @@ P_GiveAmmo
 }
 
 
+// [crispy] show weapon pickup messages in multiplayer games
+static const char *const WeaponPickupMessages[NUMWEAPONS] =
+{
+	NULL, // wp_fist
+	NULL, // wp_pistol
+	GOTSHOTGUN,
+	GOTCHAINGUN,
+	GOTLAUNCHER,
+	GOTPLASMA,
+	GOTBFG9000,
+	GOTCHAINSAW,
+	GOTSHOTGUN2,
+};
+
 //
 // P_GiveWeapon
 // The weapon name may have a MF_DROPPED flag ored in.
@@ -185,6 +199,8 @@ P_GiveWeapon
 	// [Crispy Multiplayer Doom] If -nopickupswitch, don't switch to new weapons.
 	if (!no_pickup_switch)
 	player->pendingweapon = weapon;
+	// [crispy] show weapon pickup messages in multiplayer games
+	player->message = DEH_String(WeaponPickupMessages[weapon]);
 
 	if (player == &players[consoleplayer])
 	    S_StartSound (NULL, sfx_wpnup);
@@ -213,6 +229,8 @@ P_GiveWeapon
 	// [Crispy Multiplayer Doom] If -nopickupswitch, don't switch to new weapons.
 	if (!no_pickup_switch)
 	player->pendingweapon = weapon;
+	// [crispy] show weapon pickup messages in multiplayer games
+	player->message = DEH_String(WeaponPickupMessages[weapon]);
     }
 	
     return (gaveweapon || gaveammo);
@@ -630,7 +648,7 @@ P_TouchSpecialThing
     // [Crispy Multiplayer Doom] Support -dropweapons.
 	if (!P_GiveWeapon (player, wp_bfg, (special->flags & MF_DROPPED) != 0) )
 	    return;
-	player->message = DEH_String(GOTBFG9000);
+//	player->message = DEH_String(GOTBFG9000); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 	
@@ -638,7 +656,7 @@ P_TouchSpecialThing
         if (!P_GiveWeapon(player, wp_chaingun,
                           (special->flags & MF_DROPPED) != 0))
             return;
-	player->message = DEH_String(GOTCHAINGUN);
+//	player->message = DEH_String(GOTCHAINGUN); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 	
@@ -646,7 +664,7 @@ P_TouchSpecialThing
     // [Crispy Multiplayer Doom] Support -dropweapons.
 	if (!P_GiveWeapon (player, wp_chainsaw, (special->flags & MF_DROPPED) != 0) )
 	    return;
-	player->message = DEH_String(GOTCHAINSAW);
+//	player->message = DEH_String(GOTCHAINSAW); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 	
@@ -654,7 +672,7 @@ P_TouchSpecialThing
     // [Crispy Multiplayer Doom] Support -dropweapons.
 	if (!P_GiveWeapon (player, wp_missile, (special->flags & MF_DROPPED) != 0) )
 	    return;
-	player->message = DEH_String(GOTLAUNCHER);
+//	player->message = DEH_String(GOTLAUNCHER); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 	
@@ -662,7 +680,7 @@ P_TouchSpecialThing
     // [Crispy Multiplayer Doom] Support -dropweapons.
 	if (!P_GiveWeapon (player, wp_plasma, (special->flags & MF_DROPPED) != 0) )
 	    return;
-	player->message = DEH_String(GOTPLASMA);
+//	player->message = DEH_String(GOTPLASMA); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 	
@@ -670,7 +688,7 @@ P_TouchSpecialThing
         if (!P_GiveWeapon(player, wp_shotgun,
                           (special->flags & MF_DROPPED) != 0))
             return;
-	player->message = DEH_String(GOTSHOTGUN);
+//	player->message = DEH_String(GOTSHOTGUN); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 		
@@ -678,7 +696,7 @@ P_TouchSpecialThing
         if (!P_GiveWeapon(player, wp_supershotgun,
                           (special->flags & MF_DROPPED) != 0))
             return;
-	player->message = DEH_String(GOTSHOTGUN2);
+//	player->message = DEH_String(GOTSHOTGUN2); // [crispy] moved to P_GiveWeapon()
 	sound = sfx_wpnup;	
 	break;
 		

@@ -385,8 +385,7 @@ static void CheckSteamGUSPatches(void)
 {
     const char *current_path;
     char *install_path;
-    char *patch_path;
-    int len;
+    char *test_patch_path, *patch_path;
 
     // Already configured? Don't stomp on the user's choices.
     current_path = M_GetStringVariable("gus_patch_path");
@@ -402,19 +401,17 @@ static void CheckSteamGUSPatches(void)
         return;
     }
 
-    len = strlen(install_path) + strlen(STEAM_BFG_GUS_PATCHES) + 20;
-    patch_path = malloc(len);
-    M_snprintf(patch_path, len, "%s\\%s\\ACBASS.PAT",
-               install_path, STEAM_BFG_GUS_PATCHES);
+    patch_path = M_StringJoin(install_path, "\\", STEAM_BFG_GUS_PATCHES,
+                              NULL);
+    test_patch_path = M_StringJoin(patch_path, "\\ACBASS.PAT", NULL);
 
     // Does acbass.pat exist? If so, then set gus_patch_path.
-    if (M_FileExists(patch_path))
+    if (M_FileExists(test_patch_path))
     {
-        M_snprintf(patch_path, len, "%s\\%s",
-                   install_path, STEAM_BFG_GUS_PATCHES);
         M_SetVariable("gus_patch_path", patch_path);
     }
 
+    free(test_patch_path);
     free(patch_path);
     free(install_path);
 }
@@ -484,6 +481,7 @@ static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
         filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, NULL);
     }
 
+    free(probe);
     probe = M_FileCaseExists(filename);
     free(filename);
     if (probe != NULL)
@@ -650,7 +648,37 @@ static void AddXdgDirs(void)
     // Classic WADs.
     AddIWADPath(env, "/games/doom3bfg/base/wads");
 }
-#endif
+
+#ifndef __MACOSX__
+// Steam on Linux allows installing some select Windows games,
+// including the classic Doom series (running DOSBox via Wine).  We
+// could parse *.vdf files to more accurately detect installation
+// locations, but the defaults are likely to be good enough for just
+// about everyone.
+static void AddSteamDirs(void)
+{
+    char *homedir, *steampath;
+
+    homedir = getenv("HOME");
+    if (homedir == NULL)
+    {
+        homedir = "/";
+    }
+    steampath = M_StringJoin(homedir, "/.steam/root/steamapps/common", NULL);
+
+    AddIWADPath(steampath, "/Doom 2/base");
+    AddIWADPath(steampath, "/Master Levels of Doom/doom2");
+    AddIWADPath(steampath, "/Ultimate Doom/base");
+    AddIWADPath(steampath, "/Final Doom/base");
+    AddIWADPath(steampath, "/DOOM 3 BFG Edition/base/wads");
+    AddIWADPath(steampath, "/Heretic Shadow of the Serpent Riders/base");
+    AddIWADPath(steampath, "/Hexen/base");
+    AddIWADPath(steampath, "/Hexen Deathkings of the Dark Citadel/base");
+    AddIWADPath(steampath, "/Strife");
+    free(steampath);
+}
+#endif // __MACOSX__
+#endif // !_WIN32
 
 //
 // Build a list of IWAD files
@@ -701,6 +729,9 @@ static void BuildIWADDirList(void)
 
 #else
     AddXdgDirs();
+#ifndef __MACOSX__
+    AddSteamDirs();
+#endif
 #endif
 
     // Don't run this function again.

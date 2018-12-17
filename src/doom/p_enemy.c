@@ -2017,6 +2017,10 @@ void A_BrainSpit (mobj_t*	mo)
 
     // shoot a cube at current target
     targ = braintargets[braintargeton];
+    if (numbraintargets == 0 && false) // [crispy] fixed division by zero
+    {
+        I_Error("A_BrainSpit: numbraintargets was 0 (vanilla crashes here)");
+    }
     braintargeton = (braintargeton+1)%numbraintargets;
 
     // spawn brain missile

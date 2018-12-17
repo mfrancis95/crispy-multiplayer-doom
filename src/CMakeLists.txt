@@ -5,6 +5,7 @@ endforeach()
 # Common source files used by absolutely everything:
 
 set(COMMON_SOURCE_FILES
+    crispy.c             crispy.h
     i_main.c
     i_system.c           i_system.h
     m_argv.c             m_argv.h
@@ -46,10 +47,12 @@ set(GAME_SOURCE_FILES
     gusconf.c           gusconf.h
     i_cdmus.c           i_cdmus.h
     i_endoom.c          i_endoom.h
+    i_glob.c            i_glob.h
     i_input.c           i_input.h
     i_joystick.c        i_joystick.h
                         i_swap.h
     i_midipipe.c        i_midipipe.h
+    i_musicpack.c
     i_oplmusic.c
     i_pcsound.c
     i_sdlmusic.c
@@ -83,6 +86,7 @@ set(GAME_SOURCE_FILES
     v_diskicon.c        v_diskicon.h
     v_video.c           v_video.h
                         v_patch.h
+    v_trans.c           v_trans.h
     w_checksum.c        w_checksum.h
     w_main.c            w_main.h
     w_wad.c             w_wad.h
@@ -92,6 +96,11 @@ set(GAME_SOURCE_FILES
     w_file_win32.c
     w_merge.c           w_merge.h
     z_zone.c            z_zone.h)
+
+if(MSVC)
+    list(APPEND GAME_SOURCE_FILES
+         "../win32/win_opendir.c" "../win32/win_opendir.h")
+endif()
 
 set(DEHACKED_SOURCE_FILES
                         deh_defs.h

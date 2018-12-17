@@ -107,14 +107,6 @@ static musicinfo_t *mus_playing = NULL;
 
 int snd_channels = 8;
 
-// [crispy] variable number of sound channels
-static inline int update_snd_channels (void)
-{
-	return (crispy->sndchannels == 2) ? 32 :
-	       (crispy->sndchannels == 1) ? 16 :
-	       8;
-}
-
 //
 // Initializes sound stuff, including volume
 // Sets channels, SFX and music volume,
@@ -150,7 +142,6 @@ void S_Init(int sfxVolume, int musicVolume)
     // (the maximum numer of sounds rendered
     // simultaneously) within zone memory.
     // [crispy] variable number of sound channels
-    snd_channels = update_snd_channels();
     channels = I_Realloc(NULL, snd_channels*sizeof(channel_t));
     sobjs = I_Realloc(NULL, snd_channels*sizeof(degenmobj_t));
 
@@ -451,8 +442,8 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
     // From _GG1_ p.428. Appox. eucledian distance fast.
     approx_dist = adx + ady - ((adx < ady ? adx : ady)>>1);
 
-    // [crispy] proper sound clipping in non-Doom1 MAP08
-    if ((gamemap != 8 || (crispy->soundfix && gamemode == commercial)) && approx_dist > S_CLIPPING_DIST)
+    // [crispy] proper sound clipping in Doom 2 MAP08 and The Ultimate Doom E4M8
+    if ((gamemap != 8 || (crispy->soundfix && (gamemode == commercial || gameepisode == 4))) && approx_dist > S_CLIPPING_DIST)
     {
         return 0;
     }
@@ -482,8 +473,8 @@ static int S_AdjustSoundParams(mobj_t *listener, mobj_t *source,
     {
         *vol = snd_SfxVolume;
     }
-    // [crispy] proper sound clipping in non-Doom1 MAP08
-    else if (gamemap == 8 && (gamemode != commercial || !crispy->soundfix))
+    // [crispy] proper sound clipping in Doom 2 MAP08 and The Ultimate Doom E4M8
+    else if (gamemap == 8 && ((gamemode != commercial && gameepisode != 4) || !crispy->soundfix))
     {
         if (approx_dist > S_CLIPPING_DIST)
         {
@@ -955,7 +946,12 @@ void S_UpdateSndChannels (void)
 		}
 	}
 
-	snd_channels = update_snd_channels();
+	snd_channels <<= 1;
+	if (snd_channels > 32)
+	{
+		snd_channels = 8;
+	}
+
 	channels = I_Realloc(channels, snd_channels * sizeof(channel_t));
 	sobjs = I_Realloc(sobjs, snd_channels * sizeof(degenmobj_t));
 

@@ -114,8 +114,8 @@ int video_display = 0;
 
 // Screen width and height, from configuration file.
 
-int window_width = MAXWIDTH; // hires
-int window_height = MAXHEIGHT_4_3; // hires
+int window_width = 800;
+int window_height = 600;
 
 // Fullscreen mode, 0x0 for SDL_WINDOW_FULLSCREEN_DESKTOP.
 
@@ -1252,6 +1252,15 @@ void SetVideoMode(boolean resize_fb) // [crispy] un-static, resize_fb
         }
     }
 
+    // Running without window decorations is potentially useful if you're
+    // playing in three window mode and want to line up three game windows
+    // next to each other on a single desktop.
+    // Deliberately not documented because I'm not sure how useful this is yet.
+    if (M_ParmExists("-borderless"))
+    {
+        window_flags |= SDL_WINDOW_BORDERLESS;
+    }
+
     I_GetWindowPosition(&x, &y, w, h);
 
     // Create window and renderer contexts. We set the window title
@@ -1456,7 +1465,7 @@ void I_InitGraphics(void)
     // [crispy] (re-)initialize resolution-agnostic patch drawing
     V_Init();
 
-    if (aspect_ratio_correct)
+    if (aspect_ratio_correct == 1)
     {
         actualheight = SCREENHEIGHT_4_3;
     }

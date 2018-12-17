@@ -21,6 +21,7 @@
 #include <ctype.h>
 
 #include "doomtype.h"
+#include "i_glob.h"
 #include "i_system.h"
 #include "d_iwad.h"
 #include "m_argv.h"
@@ -28,9 +29,10 @@
 
 #include "deh_defs.h"
 #include "deh_io.h"
+#include "deh_main.h"
 
 extern deh_section_t *deh_section_types[];
-extern char *deh_signatures[];
+extern const char *deh_signatures[];
 
 static boolean deh_initialized = false;
 
@@ -440,6 +442,28 @@ int DEH_LoadFile(const char *filename)
     }
 
     return 1;
+}
+
+// Load all dehacked patches from the given directory.
+void DEH_AutoLoadPatches(const char *path)
+{
+    const char *filename;
+    glob_t *glob;
+
+    glob = I_StartMultiGlob(path, GLOB_FLAG_NOCASE|GLOB_FLAG_SORTED,
+                            "*.deh", "*.bex", "*.hhe", "*.seh", NULL); // [crispy] *.bex
+    for (;;)
+    {
+        filename = I_NextGlob(glob);
+        if (filename == NULL)
+        {
+            break;
+        }
+        printf(" [autoload]");
+        DEH_LoadFile(filename);
+    }
+
+    I_EndGlob(glob);
 }
 
 // Load dehacked file from WAD lump.
