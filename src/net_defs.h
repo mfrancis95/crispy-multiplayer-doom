@@ -217,6 +217,8 @@ typedef struct
     int keep_computer_maps;
     // [Crispy Multiplayer Doom] Support -keepkeys.
     int keep_keys;
+    // [Crispy Multiplayer Doom] Support -noexit.
+    int no_exit;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     int no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.

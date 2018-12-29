@@ -60,6 +60,8 @@ extern boolean fullbright_players;
 extern boolean keep_computer_maps;
 // [Crispy Multiplayer Doom] Support -keepkeys.
 extern boolean keep_keys;
+// [Crispy Multiplayer Doom] Support -noexit.
+extern boolean no_exit;
 // [Crispy Multiplayer Doom] Support -nofriendlyfire.
 extern boolean no_friendly_fire;
 // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.

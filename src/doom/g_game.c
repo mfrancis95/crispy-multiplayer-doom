@@ -1596,6 +1596,9 @@ extern char*	pagename;
  
 void G_ExitLevel (void) 
 { 
+    // [Crispy Multiplayer Doom] Don't exit if deathmatch and -noexit.
+    if (deathmatch && no_exit)
+        return;
     secretexit = false; 
     G_ClearSavename();
     gameaction = ga_completed; 

@@ -112,6 +112,8 @@ boolean fullbright_players;
 boolean keep_computer_maps;
 // [Crispy Multiplayer Doom] Support -keepkeys.
 boolean keep_keys;
+// [Crispy Multiplayer Doom] Support -noexit.
+boolean no_exit;
 // [Crispy Multiplayer Doom] Support -nofriendlyfire.
 boolean no_friendly_fire;
 // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
@@ -1547,6 +1549,8 @@ void D_DoomMain (void)
     keep_computer_maps = M_CheckParm("-keepcomputermaps");
     // [Crispy Multiplayer Doom] Support -keepkeys.
     keep_keys = M_CheckParm("-keepkeys");
+    // [Crispy Multiplayer Doom] Support -noexit.
+    no_exit = M_CheckParm("-noexit");
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     no_friendly_fire = M_CheckParm("-nofriendlyfire");
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.

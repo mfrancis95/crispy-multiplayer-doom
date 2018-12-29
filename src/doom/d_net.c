@@ -131,6 +131,8 @@ static void LoadGameSettings(net_gamesettings_t *settings)
     keep_computer_maps = settings->keep_computer_maps;
     // [Crispy Multiplayer Doom] Support -keepkeys.
     keep_keys = settings->keep_keys;
+    // [Crispy Multiplayer Doom] Support -noexit.
+    no_exit = settings->no_exit;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     no_friendly_fire = settings->no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
@@ -195,6 +197,8 @@ static void SaveGameSettings(net_gamesettings_t *settings)
     settings->keep_computer_maps = keep_computer_maps;
     // [Crispy Multiplayer Doom] Support -keepkeys.
     settings->keep_keys = keep_keys;
+    // [Crispy Multiplayer Doom] Support -noexit.
+    settings->no_exit = no_exit;
     // [Crispy Multiplayer Doom] Support -nofriendlyfire.
     settings->no_friendly_fire = no_friendly_fire;
     // [Crispy Multiplayer Doom] Support -nomultiplayerweapons.
